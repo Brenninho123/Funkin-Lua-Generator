@@ -1,237 +1,119 @@
 <!DOCTYPE html><html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Funkin' Lua Script Generator</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, Helvetica, sans-serif;
-    }body {
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-  color: #fff;
-  min-height: 100vh;
-}
-
-header {
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.4);
-  text-align: center;
-}
-
-header h1 {
-  font-size: 2.2rem;
-}
-
-nav a {
-  color: #00eaff;
-  text-decoration: none;
-  margin: 0 10px;
-  font-weight: bold;
-}
-
-main {
-  padding: 40px 20px;
-  max-width: 1100px;
-  margin: auto;
-}
-
-section {
-  margin-bottom: 30px;
-  background: rgba(255, 255, 255, 0.08);
-  padding: 20px;
-  border-radius: 12px;
-}
-
-h2 {
-  color: #00eaff;
-  margin-bottom: 10px;
-}
-
-label {
-  display: block;
-  margin-top: 10px;
-  font-size: 0.9rem;
-}
-
-input, select, textarea {
-  width: 100%;
-  margin-top: 5px;
-  padding: 10px;
-  border-radius: 6px;
-  border: none;
-  outline: none;
-  font-family: monospace;
-}
-
-textarea {
-  min-height: 220px;
-  resize: vertical;
-}
-
-button {
-  margin-top: 15px;
-  background: #00eaff;
-  color: #000;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: 0.3s;
-}
-
-button:hover {
-  background: #00b7c2;
-}
-
-footer {
-  text-align: center;
-  padding: 15px;
-  background: rgba(0, 0, 0, 0.5);
-  font-size: 0.9rem;
-}
-
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FNF Lua IDE - Psych Engine</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+body{background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);color:#fff;min-height:100vh}
+header{padding:20px;background:rgba(0,0,0,.45);text-align:center}
+header h1{font-size:2.3rem;color:#00eaff}
+header p{opacity:.9}
+main{max-width:1200px;margin:auto;padding:30px}
+section{background:rgba(255,255,255,.08);border-radius:14px;padding:20px;margin-bottom:25px}
+h2{color:#00eaff;margin-bottom:10px}
+label{display:block;margin-top:12px;font-size:.9rem}
+select,input,textarea{width:100%;margin-top:6px;padding:10px;border-radius:8px;border:none;outline:none;font-family:monospace}
+textarea{min-height:260px;resize:vertical}
+.buttons{display:flex;flex-wrap:wrap;gap:10px;margin-top:15px}
+button{background:#00eaff;color:#000;border:none;padding:10px 18px;border-radius:10px;cursor:pointer;font-weight:bold;transition:.3s}
+button:hover{background:#00b7c2}
+footer{text-align:center;padding:15px;background:rgba(0,0,0,.5);font-size:.85rem;opacity:.9}
+.small{opacity:.8;font-size:.85rem;margin-top:5px}
+</style>
 </head>
-<body><header>
-  <h1>FNF Psych Engine</h1>
-  <p>Gerador de Scripts em Lua</p>
-</header><main><section>
-  <h2>Gerador Universal de Scripts Lua (Psych Engine)</h2><label>Tipo de Script</label> <select id="tipo"> <option value="empty">Script vazio</option> <option value="modchart">Modchart</option> <option value="hud">HUD</option> <option value="event">Evento</option> <option value="camera">Camera Follow</option> <option value="notesplash">Note Splash</option> <option value="customnote">Custom Note</option> <option value="stage">Stage</option> <option value="ui">UI / Menu</option> <option value="gameover">Game Over</option> <option value="achievement">Achievement</option> <option value="shader">Shader (Lua)</option> </select>
-
-<label>Callback Lua (opcional)</label> <select id="callback"> <option value="">Nenhum</option> <option value="onCreate">onCreate</option> <option value="onCreatePost">onCreatePost</option> <option value="onUpdate">onUpdate</option> <option value="onBeatHit">onBeatHit</option> <option value="onStepHit">onStepHit</option> <option value="goodNoteHit">goodNoteHit</option> <option value="opponentNoteHit">opponentNoteHit</option> <option value="onEvent">onEvent</option> <option value="onGameOver">onGameOver</option> <option value="onEndSong">onEndSong</option> </select>
-
-<label>Velocidade / Duração</label> <input id="vel" value="0.5" />
-
+<body>
+<header>
+<h1>FNF Lua IDE</h1>
+<p>Editor e Gerador Universal de Scripts Lua • Psych Engine</p>
+</header>
+<main>
+<section>
+<h2>Configuração do Script</h2>
+<label>Tipo de Script</label>
+<select id="tipo">
+<option value="empty">Script vazio</option>
+<option value="modchart">Modchart</option>
+<option value="hud">HUD</option>
+<option value="event">Evento</option>
+<option value="camera">Camera Follow</option>
+<option value="notesplash">Note Splash</option>
+<option value="customnote">Custom Note</option>
+<option value="stage">Stage</option>
+<option value="ui">UI / Menu</option>
+<option value="gameover">Game Over</option>
+<option value="achievement">Achievement</option>
+<option value="shader">Shader (Lua)</option>
+</select>
+<label>Callback adicional (opcional)</label>
+<select id="callback">
+<option value="">Nenhum</option>
+<option>onCreate</option>
+<option>onCreatePost</option>
+<option>onUpdate</option>
+<option>onBeatHit</option>
+<option>onStepHit</option>
+<option>goodNoteHit</option>
+<option>opponentNoteHit</option>
+<option>onEvent</option>
+<option>onGameOver</option>
+<option>onEndSong</option>
+</select>
+<label>Duração / Velocidade</label>
+<input id="vel" value="0.5" />
+<div class="buttons">
 <button onclick="gerar()">Gerar Script</button>
-
-</section><section>
-  <h2>Script Lua (Psych Engine)</h2>
-  <textarea id="saida"></textarea>
-  <button onclick="copiar()">Copiar</button>
-</section></main><footer>
-  © 2026 - Funkin' Lua Generator
-</footer><script>
-function gerar() {
-  const tipo = document.getElementById('tipo').value;
-  const cb = document.getElementById('callback').value;
-  const vel = document.getElementById('vel').value;
-
-  let lua = `-- GERADO PELO FUNKIN LUA GENERATOR
-`;
-
-  if (tipo === 'empty') {
-    lua += `function onCreate()
-end
-
-function onUpdate(elapsed)
-end
-
-function onBeatHit()
-end`;
-  }
-
-  if (tipo === 'modchart') {
-    lua += `function onBeatHit()
-  if curBeat % 4 == 0 then
-    doTweenZoom('zoom','camGame',getProperty('camGame.zoom')+0.1,${vel},'quadOut')
-  end
-end`;
-  }
-
-  if (tipo === 'hud') {
-    lua += `function onCreatePost()
-  setTextSize('scoreTxt',22)
-  setProperty('healthBar.alpha',0.8)
-end`;
-  }
-
-  if (tipo === 'event') {
-    lua += `function onEvent(name,v1,v2)
-  if name == 'Flash' then
-    cameraFlash('camGame','FFFFFF',tonumber(v1) or 0.5)
-  end
-end`;
-  }
-
-  if (tipo === 'camera') {
-    lua += `function onUpdate()
-  if mustHitSection then
-    triggerEvent('Camera Follow Pos','600','450')
-  else
-    triggerEvent('Camera Follow Pos','1000','450')
-  end
-end`;
-  }
-
-  if (tipo === 'notesplash') {
-    lua += `function goodNoteHit(id,dir,noteType,isSustain)
-  if not isSustain then
-    spawnNoteSplashOnNote(id)
-  end
-end`;
-  }
-
-  if (tipo === 'customnote') {
-    lua += `function goodNoteHit(id,dir,noteType,isSustain)
-  if noteType == 'Damage Note' then
-    setProperty('health',getProperty('health')-0.3)
-  end
-end`;
-  }
-
-  if (tipo === 'stage') {
-    lua += `function onCreate()
-  makeLuaSprite('bg','stage/bg',-600,-200)
-  addLuaSprite('bg',false)
-end`;
-  }
-
-  if (tipo === 'ui') {
-    lua += `function onCreatePost()
-  setPropertyFromClass('ClientPrefs','downScroll',true)
-end`;
-  }
-
-  if (tipo === 'gameover') {
-    lua += `function onGameOver()
-  playSound('death',1)
-  return Function_Continue
-end`;
-  }
-
-  if (tipo === 'achievement') {
-    lua += `function onEndSong()
-  unlockAchievement('my_achievement')
-  return Function_Continue
-end`;
-  }
-
-  if (tipo === 'shader') {
-    lua += `function onUpdate(elapsed)
-  setProperty('camGame.alpha',0.95)
-end`;
-  }
-
-  if (cb !== '') {
-    lua += `
-
--- CALLBACK EXTRA
-function ${cb}()
-end`;
-  }
-
-  document.getElementById('saida').value = lua;
-}
-
-function copiar() {
-  const t = document.getElementById('saida');
-  t.select();
-  document.execCommand('copy');
-  alert('Script copiado!');
-}
-</script></body>
+<button onclick="limpar()">Limpar</button>
+</div>
+<p class="small">Tudo é editável manualmente após gerar.</p>
+</section>
+<section>
+<h2>Editor Lua</h2>
+<textarea id="saida"></textarea>
+<div class="buttons">
+<button onclick="copiar()">Copiar</button>
+<button onclick="baixar()">Baixar .lua</button>
+</div>
+</section>
+</main>
+<footer>
+© 2026 • FNF Lua IDE • HTML puro • Psych Engine
+</footer>
+<script>
+function gerar(){
+const tipo=document.getElementById('tipo').value;
+const cb=document.getElementById('callback').value;
+const vel=document.getElementById('vel').value;
+let lua='-- FNF LUA SCRIPT (Psych Engine)\n\n';
+if(tipo==='empty'){
+lua+=`function onCreate()\nend\n\nfunction onUpdate(elapsed)\nend\n\nfunction onBeatHit()\nend`}
+if(tipo==='modchart'){
+lua+=`function onBeatHit()\n  if curBeat % 4 == 0 then\n    doTweenZoom('zoom','camGame',getProperty('camGame.zoom')+0.1,${vel},'quadOut')\n  end\nend`}
+if(tipo==='hud'){
+lua+=`function onCreatePost()\n  setTextSize('scoreTxt',22)\n  setProperty('healthBar.alpha',0.8)\nend`}
+if(tipo==='event'){
+lua+=`function onEvent(name,v1,v2)\n  if name == 'Flash' then\n    cameraFlash('camGame','FFFFFF',tonumber(v1) or 0.5)\n  end\nend`}
+if(tipo==='camera'){
+lua+=`function onUpdate()\n  if mustHitSection then\n    triggerEvent('Camera Follow Pos','600','450')\n  else\n    triggerEvent('Camera Follow Pos','1000','450')\n  end\nend`}
+if(tipo==='notesplash'){
+lua+=`function goodNoteHit(id,dir,noteType,isSustain)\n  if not isSustain then\n    spawnNoteSplashOnNote(id)\n  end\nend`}
+if(tipo==='customnote'){
+lua+=`function goodNoteHit(id,dir,noteType,isSustain)\n  if noteType == 'Damage Note' then\n    setProperty('health',getProperty('health')-0.3)\n  end\nend`}
+if(tipo==='stage'){
+lua+=`function onCreate()\n  makeLuaSprite('bg','stage/bg',-600,-200)\n  addLuaSprite('bg',false)\nend`}
+if(tipo==='ui'){
+lua+=`function onCreatePost()\n  setPropertyFromClass('ClientPrefs','downScroll',true)\nend`}
+if(tipo==='gameover'){
+lua+=`function onGameOver()\n  playSound('death',1)\n  return Function_Continue\nend`}
+if(tipo==='achievement'){
+lua+=`function onEndSong()\n  unlockAchievement('my_achievement')\n  return Function_Continue\nend`}
+if(tipo==='shader'){
+lua+=`function onUpdate(elapsed)\n  setProperty('camGame.alpha',0.95)\nend`}
+if(cb!==''){lua+=`\n\n-- Callback extra\nfunction ${cb}()\nend`}
+document.getElementById('saida').value=lua}
+function copiar(){const t=document.getElementById('saida');t.select();document.execCommand('copy');alert('Copiado!')}
+function baixar(){const blob=new Blob([document.getElementById('saida').value],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='script.lua';a.click()}
+function limpar(){document.getElementById('saida').value=''}
+</script>
+</body>
 </html>
