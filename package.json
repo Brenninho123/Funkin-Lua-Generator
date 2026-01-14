@@ -1,15 +1,11 @@
+"scripts": {
+  "dist-win": "electron-builder --win nsis"
+},
 "build": {
   "appId": "com.fnf.toolkit",
   "productName": "FNF Ultimate Toolkit",
-  "directories": {
-    "output": "dist"
-  },
+  "directories": { "output": "dist" },
   "publish": null,
-  "files": [
-    "**/*"
-  ],
-  "win": {
-    "target": "nsis",
-    "icon": "assets/icon.ico"
-  }
+  "files": ["**/*"],
+  "win": { "target": "nsis", "icon": "assets/icon.ico" }
 }
