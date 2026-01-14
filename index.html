@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FNF Ultimate Toolkit</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+body{background:linear-gradient(135deg,#050d12,#0f2027,#203a43);color:#fff;min-height:100vh}
+header{padding:20px;background:rgba(0,0,0,.5);text-align:center}
+header h1{color:#00eaff;font-size:2.2rem}
+nav a{color:#00eaff;text-decoration:none;margin:0 10px;font-weight:bold}
+main{max-width:1200px;margin:auto;padding:30px}
+section{background:rgba(255,255,255,.08);padding:20px;border-radius:14px;margin-bottom:30px}
+h2{color:#00ffa5;margin-bottom:10px}
+textarea,select,input{width:100%;padding:10px;border-radius:8px;border:none;margin-top:10px}
+button{background:#00ffa5;color:#000;border:none;padding:10px 18px;border-radius:8px;font-weight:bold;cursor:pointer;margin-top:10px}
+pre{background:#111;padding:15px;border-radius:10px;overflow:auto;max-height:300px}
+footer{text-align:center;padding:15px;background:rgba(0,0,0,.6)}
+#introScreen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+background:linear-gradient(135deg,#050d12,#0f2027,#203a43);z-index:9999}
+#introBox{background:rgba(0,0,0,.7);padding:40px;border-radius:20px;text-align:center}
+</style>
+</head>
+
+<body>
+
+<div id="introScreen">
+  <div id="introBox">
+    <h1>FNF Ultimate Toolkit</h1>
+    <p>Psych • Codename • V-Slice<br>Lua • Haxe • HScript</p>
+    <button onclick="enterSite()">Entrar</button>
+  </div>
+</div>
+
+<header>
+<h1>Friday Night Funkin' – Toolkit Definitivo</h1>
+<nav>
+<a href="#generator">Gerador</a>
+<a href="#chart">Chart</a>
+<a href="#stage">Stage</a>
+</nav>
+</header>
+
+<main>
+
+<!-- ================= GERADOR ================= -->
+<section id="generator">
+<h2>🎮 Gerador de Scripts</h2>
+
+<select id="engine">
+<option>Psych Engine (Lua)</option>
+<option>Codename Engine (HScript)</option>
+<option>V-Slice (Haxe)</option>
+</select>
+
+<select id="scriptType">
+<option>Camera Zoom</option>
+<option>Camera Follow</option>
+<option>Custom Event</option>
+<option>Note Splash Toggle</option>
+<option>Middle Scroll Toggle</option>
+<option>Beat Animation</option>
+<option>Custom HUD (Haxe)</option>
+<option>Note Modifier (Haxe)</option>
+<option>Camera Script (Haxe)</option>
+<option>Character Script (Haxe)</option>
+<option>Health Drain (Haxe)</option>
+</select>
+
+<button onclick="generate()">Gerar</button>
+<textarea id="output" rows="14"></textarea>
+<button onclick="copyOut()">Copiar</button>
+<button onclick="downloadOut()">Baixar</button>
+</section>
+
+<!-- ================= CHART ================= -->
+<section id="chart">
+<h2>🎵 Psych Chart → VSlice</h2>
+<input type="file" id="chartInput" accept=".json">
+<button onclick="downloadChart()">Baixar Chart</button>
+<pre id="chartOutput"></pre>
+</section>
+
+<!-- ================= STAGE ================= -->
+<section id="stage">
+<h2>🎭 Psych Stage → VSlice</h2>
+<input type="file" id="stageJson" accept=".json">
+<input type="file" id="stageLua" accept=".lua">
+<button onclick="convertStage()">Converter Stage</button>
+<pre id="stageOutput"></pre>
+</section>
+
+</main>
+
+<footer>© 2026 • FNF Ultimate Toolkit</footer>
+
+<script>
+function enterSite(){
+ document.getElementById('introScreen').style.display='none';
+}
+
+/* ===== GERADOR ===== */
+function generate(){
+ const engine=document.getElementById("engine").value;
+ const type=document.getElementById("scriptType").value;
+ let code="";
+
+ if(engine.includes("Psych")){
+  if(type==="Camera Zoom") code=`function onBeatHit()\n cameraShake('camGame',0.02,0.2)\nend`;
+  if(type==="Camera Follow") code=`function onUpdate()\n triggerEvent('Camera Follow Pos',xx,yy)\nend`;
+  if(type==="Custom Event") code=`function onEvent(n,v1,v2)\n if n=='MyEvent' then debugPrint(v1) end\nend`;
+  if(type==="Note Splash Toggle") code=`function onCreate()\n setPropertyFromClass('ClientPrefs','noteSplashes',false)\nend`;
+  if(type==="Middle Scroll Toggle") code=`function onCreatePost()\n setPropertyFromClass('ClientPrefs','middleScroll',true)\nend`;
+  if(type==="Beat Animation") code=`function onBeatHit()\n characterPlayAnim('boyfriend','hey',true)\nend`;
+ }
+
+ if(engine.includes("V-Slice")){
+  if(type.includes("HUD")) code=`class HUD extends flixel.FlxState{override function create(){trace("HUD");}}`;
+  if(type.includes("Note Modifier")) code=`override function update(elapsed){notes.forEach(n->n.alpha=0.5);}`;
+  if(type.includes("Camera")) code=`FlxG.camera.zoom+=0.01;`;
+  if(type.includes("Character")) code=`dad.playAnim("singLEFT",true);`;
+  if(type.includes("Health")) code=`health-=0.01;`;
+ }
+
+ document.getElementById("output").value=code;
+}
+
+function copyOut(){output.select();document.execCommand("copy");}
+function downloadOut(){
+ const a=document.createElement("a");
+ a.href=URL.createObjectURL(new Blob([output.value]));
+ a.download="fnf_script.txt";
+ a.click();
+}
+
+/* ===== CHART ===== */
+let chartResult="";
+chartInput.onchange=e=>{
+ const r=new FileReader();
+ r.onload=ev=>{
+  const data=JSON.parse(ev.target.result);
+  const out={version:"2.0.0",scrollSpeed:{hard:1},events:[],notes:{hard:[]}};
+  (data.song?.notes||[]).forEach(s=>{
+   (s.sectionNotes||[]).forEach(n=>{
+    out.notes.hard.push({t:n[0],d:n[1],l:n[2]||0});
+   });
+  });
+  chartResult=JSON.stringify(out,null,2);
+  chartOutput.textContent=chartResult;
+ };
+ r.readAsText(e.target.files[0]);
+};
+
+function downloadChart(){
+ if(!chartResult)return;
+ const a=document.createElement("a");
+ a.href=URL.createObjectURL(new Blob([chartResult]));
+ a.download="vslice-chart.json";
+ a.click();
+}
+
+/* ===== STAGE ===== */
+let stageJSON=null,stageLUA=null;
+stageJson.onchange=e=>{const r=new FileReader();r.onload=x=>stageJSON=JSON.parse(x.target.result);r.readAsText(e.target.files[0]);}
+stageLua.onchange=e=>{const r=new FileReader();r.onload=x=>stageLUA=x.target.result;r.readAsText(e.target.files[0]);}
+
+function convertStage(){
+ if(!stageJSON||!stageLUA)return alert("Envie JSON e LUA");
+ const out={version:"1.0.0",cameraZoom:stageJSON.defaultZoom||0.9,props:[]};
+ stageOutput.textContent=JSON.stringify(out,null,2);
+ const a=document.createElement("a");
+ a.href=URL.createObjectURL(new Blob([JSON.stringify(out,null,2)]));
+ a.download="vslice-stage.json";
+ a.click();
+}
+</script>
+
+</body>
+</html>
