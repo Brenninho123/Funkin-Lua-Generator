@@ -6,12 +6,8 @@ on:
       - 'v*'
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [windows-latest, ubuntu-latest]
-
+  build-all:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -24,16 +20,24 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build app
-        run: |
-          if [ "${{ matrix.os }}" == "windows-latest" ]; then
-            npm run dist-win
-          else
-            npm run dist-linux
-          fi
+      - name: Install Wine for Windows build
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y wine64
 
-      - name: Upload artifacts
+      - name: Build Windows executable
+        run: npm run dist-win
+
+      - name: Build Linux AppImage
+        run: npm run dist-linux
+
+      - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.os }}-build
-          path: dist/*
+          name: windows-build
+          path: dist/*.exe
+
+      - name: Upload Linux artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-build
+          path: dist/*.AppImage
