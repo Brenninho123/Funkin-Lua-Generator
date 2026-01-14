@@ -1,25 +1,38 @@
-name: Build Windows Installer
+name: Build FNF Ultimate Toolkit for Windows
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
+    branches:
+      - main
+  pull_request:
 
 jobs:
-  build:
+  build-windows:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
+      # 1️⃣ Pegar o código do repositório
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Setup Node
-      uses: actions/setup-node@v3
-      with:
-        node-version: 20
+      # 2️⃣ Instalar Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
 
-    - name: Install dependencies
-      run: npm ci
+      # 3️⃣ Instalar dependências (usando npm install)
+      - name: Install dependencies
+        run: npm install
 
-    - name: Build Windows
-      run: npm run dist-win
+      # 4️⃣ Build do Electron (Windows)
+      - name: Build Windows executable
+        run: |
+          npx electron-builder --windows --x64
+
+      # 5️⃣ Upload dos artefatos (EXE e blockmap)
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: FNF-Ultimate-Toolkit-Windows
+          path: dist/*.exe
